@@ -74,19 +74,38 @@ for x in mynumberlist:
 """
 print(mysqaurednumbers)
 
-
-# Some more fun with collections, lambdas, and some collection functions.
-print(f"/n/n")
+print()
 
 """
 Create a list of numbers.
 Without changing the original list, 
 produce a new list of the squares of the numbers.
 """
+print("playing with squares")
 
+mylist = [1, 2, 3, 4, 5]
+#squares = [x*x for x in mylist] # comprehension
+square = lambda x: x**2
+# squares = [square(x) for x in mylist] # lambda
 
+# Map Function: map(function, list)
+squares = list(map(square, mylist))
+
+print(squares)
 
 """
 Using the original list,
 create a new list of the numbers that are even.
 """
+print("Playing with evens")
+# evens = [x for x in mylist if x % 2 == 0] # comprehension
+
+"""
+evens = []
+for x in mylist:
+    if x % 2 == 0:
+        evens.append(x)
+""" # for loop
+
+evens = list(filter(lambda x:x % 2 == 0, mylist)) # filter
+print(evens)
