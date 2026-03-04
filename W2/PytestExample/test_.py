@@ -40,11 +40,11 @@ def reverse_string(s):
 
 # factorial function
 def factorial(n):
-    if n < 0:
-        raise ValueError("Factorial not defined for negative numbers")
-    if n == 0:
-        return 1
-    return n * factorial(n - 1)
+    if n < 0: #*
+        raise ValueError("Factorial not defined for negative numbers")#*
+    if n == 0: #*
+        return 1 #*
+    return n * factorial(n - 1) #*
 
 # count_vowels function
 def count_vowels(s):
