@@ -1,0 +1,7 @@
+StudentID,StudentName,Major,Courses (IDs & Titles),Instructors & Offices,Grades
+1001,Sarah Chen,Comp Sci,"CS101 (Intro to Java), MA205 (Calculus II)","Prof. Aris (Rm 402), Prof. Gauss (Rm 112)","A, B+"
+1002,Mike Ross,Pre-Law,PL101 (Ethics 101),Prof. Specter (Rm 905),A-
+1003,Elena Gilbert,Biology,"BIO50 (Genetics), CS101 (Intro to Java)","Prof. Pierce (Rm 330), Prof. Aris (Rm 402)","B, A"
+1004,John Smith,Comp Sci,"CS101 (Intro to Java), PY101 (Intro to Python)","Prof. Aris (Rm 402), Prof. Hopper (Rm 201)","C, B"
+1005,Alex Rivera,Comp Sci,"CS101 (Intro to Java), MA205 (Calculus II), PY101 (Intro to Python)","Prof. Aris (Rm 402), Prof. Gauss (Rm 112), Prof. Hopper (Rm 201)","A, A-, B+"
+1006,Jamie Vane,Physics,"MA205 (Calculus II), PH200 (Mechanics)","Prof. Gauss (Rm 112), Prof. Curie (Rm 505)","B, B"
