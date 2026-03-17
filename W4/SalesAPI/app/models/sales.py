@@ -1,0 +1,2 @@
+class sales:
+    ## etc.
