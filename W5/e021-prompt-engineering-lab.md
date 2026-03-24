@@ -93,10 +93,7 @@ You need the LLM to convert column names from various formats to snake_case foll
 
 1. Write the few-shot prompt with the 3 examples
 2. Submit and evaluate: did it follow the pattern correctly for all 4 inputs?
-       - yes, it followed the pattern correctly, everything was lower case and words were seperated by underscores
 3. Were there any the model struggled with? Why?
-       - ChatGPT, unlike Claude and Gemini, did not provide any explanation for how the conversions worked
-       - This is likely because it is designed to retrieve results rather than educate. It also might be personalized to myself and assume that I already know snake_case
 
 ### Challenge 2.2: SQL to Documentation
 
@@ -139,9 +136,7 @@ ORDER BY 1, 2
 
 1. Write the prompt with the example
 2. Evaluate: did the model follow the documentation format?
-       - Claude and ChatGPT models followed the format correctly, while Gemini slightly varied from suggested format
 3. Is the documentation accurate?
-       - All of the models largely assumed the same thing based of the assumption of what each field meant. I would agree with there interpretations but without more detail, it is difficult to varify whether it is correct.
 
 ---
 
