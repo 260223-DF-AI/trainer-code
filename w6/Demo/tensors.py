@@ -3,14 +3,6 @@ import torch # pytorch - the library of ML tools that we'll need!
 import torch.nn as nn # the standard neural network modules (linear, conv2d) - and the loss function!
 import torch.optim as optim # the standard optimizers (SGD, Adam, etc.)
 
-
-x = torch.tensor([[1],[2],[3],[4],[5]]).float()
-y = torch.tensor([[40],[60],[80],[100],[120]]).float()
-# y = wx+b
-# w = 20, b = 20
-
-
-
 def tensor_ops():
     print()
     print("-- Numpy Array --")
@@ -88,6 +80,7 @@ class LinearRegressionModel(nn.Module):
         return self.linear(x)
 
 def train_model():
+    print()
     print("-- Intialize Linear Regression Model --")
 
     input_dim = 1
@@ -130,15 +123,14 @@ def train_model():
     print({'final weights:' : model.linear.weight.item()})
     print({'final bias:' : model.linear.bias.item()})
 
-
     print()
     print("-- Testing --")
-    model.eval() # exitn the learning mode 
+    model.eval() # exit the learning mode 
     test_input = torch.tensor([[6]]).float() # create a test input
     with torch.no_grad():
         prediction = model(test_input) # run the model
         print({'prediction': prediction.item()})
 
 if __name__ == "__main__":
-    #tensor_ops()
+    tensor_ops()
     train_model()
