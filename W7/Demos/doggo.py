@@ -13,8 +13,6 @@ TRAIN_DIR = os.path.join(DATA_ROOT, "train")
 TEST_DIR = os.path.join(DATA_ROOT, "test")
 LOG_DIR = "runs/doggo_logs"
 MODEL_PATH = "doggo.pth"
-NUM_EPOCHS = 10
-PATIENCE = 20
 
 if not os.path.exists(TRAIN_DIR):
     print(f"ERROR: Dataset directory '{TRAIN_DIR}' not found.")
@@ -91,24 +89,24 @@ class DoggoModel(nn.Module):
         return x
 
 class EarlyStopping:
-    def __init__(self, patience=20):
-        self.patience = patience
-        self.counter = 0
-        self.best_loss = float('inf')
+    def __init__(self, patience = 20):
+        self.patience = patience # how many batches without improvement to allow
+        self.counter = 0 # num batches w/o improvement
+        self.best_loss = float('inf') # best loss
         self.early_stop = False
 
-    def __call__(self, current_loss):
-        if current_loss < self.best_loss:
-            self.best_loss = current_loss
-            self.counter = 0
-            return False, True # should_stop=False, is_better=True
-        else:
-            self.counter += 1
-            if self.counter >= self.patience:
-                self.early_stop = True
-            return self.early_stop, False # should_stop=True/False, is_better=False
+    def __call__(self, loss):
+        if loss < self.best_loss: # if loss improved (got smaller)
+            self.best_loss = loss # update best loss
+            self.counter = 0 # reset counter
+            return self.early_stop, True
+        else: # if loss didn't improve
+            self.counter += 1 # increment counter
+            if self.counter >= self.patience: # if counter exceeds patience
+                self.early_stop = True # early stop
+        return self.early_stop, False
 
-def train_loop(dataloader, model, loss_fn, optimizer, epoch, writer, device, early_stopping):
+def train_loop(dataloader, model, loss_fn, optimizer, epoch, best_loss, writer, device, early_stop):
     print()
 
     print(f"\n--- Training Epoch {epoch+1} ---")
@@ -124,30 +122,39 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, writer, device, ear
         loss.backward()
         optimizer.step()
 
-        writer.add_scalar("Loss/train", loss.item(), batch + (epoch * len(dataloader)))
+        writer.add_scalar("Loss/train", loss.item(), batch)
         
-        print(f"Batch {batch}: Loss = {loss.item():>7f}")
+        # print(f"Batch {batch}: Loss = {loss.item():>7f}")
 
-        should_stop, is_better = early_stopping(loss.item())
+        should_stop, improved = early_stop(loss.item())
 
-        if is_better:
+        if improved:
+            best_loss = loss
+
             print("New best model found! Loss: ", loss.item(), " Saving...")
 
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
-                'loss': loss.item(),
+                'loss': loss,
             }, MODEL_PATH)
 
+        print(f"Batch {batch}: Loss = {loss.item():>7f}")
+        # if batch % 100 == 0:
+        #     print(f"Batch {batch}: Loss = {loss.item():>7f}")
+            
+            # if batch != 0 and (best_loss - loss) < 0.001:
+            #     print("That's all folks!")
+            #     break
+            # Look for low benefit to the training like this ^^
         if should_stop:
-            print(f"\n--- Early stopping at batch {batch} (total patience: {early_stopping.patience}) ---")
-            return model, early_stopping.best_loss, True
+            return model, early_stop.best_loss, True
 
     end_time = time.time()
     print(f"Epoch {epoch+1} completed: {batch+1} batches processed")
     print(f"Time taken: {end_time - start_time:.2f} seconds")
-    return model, early_stopping.best_loss, False
+    return model, best_loss, False
 
 def evaluate(dataloader, model, loss_fn, writer, device):
     print()
@@ -183,36 +190,37 @@ def main():
 
     print()
     print("--- Instantiate Model ---")
-#   model = DoggoModel()
-    model = PreTrainedModel().to(device)
+    model = DoggoModel()
+    # model = PreTrainedModel().to(device)
     best_loss = float('inf')
     
     print("Adding graph to tensorboard...")
     dummy_data = torch.randn(1, 3, 256, 256).to(device)
     writer.add_graph(model, dummy_data)
 
-    
+    NUM_EPOCHS = 1
     optimizer = optim.Adam(
         filter(lambda p: p.requires_grad, model.parameters()), 
         lr=0.001
     )
     criterion = nn.CrossEntropyLoss()
 
-    early_stopping = EarlyStopping(patience=PATIENCE)
+    early_stop = EarlyStopping()
 
     print("--- Load Best Model ---")
     if os.path.exists(MODEL_PATH):
         best_model = torch.load(MODEL_PATH, weights_only=True)
         model.load_state_dict(best_model['model_state_dict'])
         optimizer.load_state_dict(best_model['optimizer_state_dict'])
-        early_stopping.best_loss = best_model['loss']
+        best_loss = best_model['loss']
         print("Loaded best model from ", MODEL_PATH)
 
     for epoch in range(NUM_EPOCHS):
-        model, current_best_loss, early_stop = train_loop(train_loader, model, criterion, optimizer, epoch, writer, device, early_stopping)
+        model, best_loss, early_stopped = train_loop(train_loader, model, criterion, optimizer, epoch, best_loss, writer, device, early_stop)
         evaluate(test_loader, model, criterion, writer, device)
-        if early_stop:
-            print(f"Training stopped early due to no improvement in loss over {PATIENCE} batches.")
+
+        if early_stopped:
+            print("Broke early")
             break
 
 if __name__ == "__main__":
