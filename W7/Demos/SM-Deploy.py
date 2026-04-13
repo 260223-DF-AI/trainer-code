@@ -19,7 +19,7 @@ LOCAL_MODEL_DIR = 'local_model'
 TAR_NAME = 'model.tar.gz'
 EPOCHS = 10
 LEARNING_RATE = 0.0005
-ARN = "arn:aws:iam::407975137156:role/2371-SageMaker-ScriptingRole" ## DON'T LEAVE YOUR CREDS IN YOUR CODE
+ARN = "NOOOOOOOOOOOOOO" ## DON'T LEAVE YOUR CREDS IN YOUR CODE
 print(f"Training on {TRAIN_DEVICE}")
 print(f"Deploying on {DEPLOY_DEVICE}")
 

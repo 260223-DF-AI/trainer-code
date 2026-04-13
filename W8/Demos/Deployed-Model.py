@@ -43,7 +43,8 @@ def prediction_with_boto3(input_data, endpoint_name):
 
 def main():
     input_data = [17, 5, -40]
-    endpoint_name = "pytorch-inference-2026-04-13-18-28-11-200"
+    endpoint_name = "ThisIsMyEndpoint,YouCantHaveIt!" # You generally don't want to leave this in your repo either.
+    
 
     start = time.time()
     prediction_with_sagemaker(input_data, endpoint_name)
