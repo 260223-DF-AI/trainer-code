@@ -1,19 +1,13 @@
-# AFD - HackerRank & LeetCode Challenges
+# HackerRank & LeetCode Challenges
 
-This repository contains all Python and SQL coding challenges for the AFD program, organized into two tracks.
+## HackerRank Challenges
 
----
-
-## Weekly HackerRank Challenges (Weeks 1-3)
-
-Assigned HackerRank challenges delivered over the next 3 weeks. Each challenge includes a full walkthrough with:
+Assigned HackerRank challenges: each challenge includes a full walkthrough with:
 
 - **The Question** -- problem statement and constraints
 - **Simple Solution** -- a straightforward, readable approach that solves the problem correctly with minimal complexity
 - **Improved Solution** -- a refined version that optimizes for performance, idiomatic style, or reduced verbosity
 - **Explanation** -- step-by-step breakdown of the logic behind each solution
-
-Weekly challenge files will be added to the `weekly/` directory as they are assigned.
 
 ```
 afd-hackerrank/
@@ -24,9 +18,7 @@ afd-hackerrank/
     week-2/
       python/
       sql/
-    week-3/
-      python/
-      sql/
+
 ```
 
 ---
