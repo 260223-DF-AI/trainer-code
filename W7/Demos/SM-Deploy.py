@@ -29,7 +29,7 @@ EPOCHS = 10
 LEARNING_RATE = 0.0005
 
 ## DON'T LEAVE YOUR CREDS IN YOUR CODE
-ARN = "No" 
+ARN = "arn:aws:iam::407975137156:role/2371-SM-Execution-Test" 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"running on {device}")
@@ -113,4 +113,6 @@ test_input = [10, 20, -5]
 response = predictor.predict(test_input)
 print(response)
 
-predictor.delete_endpoint()
+print(f"Endpoint Name: {predictor.endpoint_name}")
+
+#predictor.delete_endpoint()
