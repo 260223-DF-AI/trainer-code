@@ -52,7 +52,7 @@
 | Aldio | asoetarman | r$5Vzn |
 | Danielle | dstewart | @2Ibes |
 | Charles | ctenuta | 9!Gqyl |
-| Lucas | lholler |  z@f4wM |
+| Lucas | lholler | z@f4wM |
 | Joseph | jbarroso | S@xoz3 |
 | Timothy | tleahy | $0rUwb |
 | Andy | amei1 | Y*cmz9 |

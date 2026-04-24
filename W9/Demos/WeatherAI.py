@@ -1,7 +1,10 @@
 from langchain_ollama import ChatOllama
 from langchain.tools import tool
-from langchain_core.messages import HumanMessage, ToolMessage
+from langchain_core.messages import SystemMessage,HumanMessage, ToolMessage, AIMessage
 import requests
+
+
+print("starting...")
 
 @tool
 def get_weather(city: str) -> str:
@@ -11,7 +14,9 @@ def get_weather(city: str) -> str:
 @tool
 def get_live_weather(city:str) -> str:
     """ Get the current live weather conditons of a city. """
-    WEATHER_API_KEY = "XXXXXXXXXXXXXXXXX"
+    
+    print("running live weather...")
+    WEATHER_API_KEY = "811866310be14061983135938262304"
     WEATHER_BASE_URL = "https://api.weatherapi.com/v1/"
 
     response = requests.get(
@@ -41,28 +46,49 @@ agent = ChatOllama(
     temperature=0.1
     ).bind_tools(tools)
 
-messages = [HumanMessage(content="Tell me what the weather is generally like in San Francisco.")]
+messages = []
 
-response = agent.invoke(messages)
+messages.append(SystemMessage(content="You are a helpful weather assistant. You implicitly trust the responses from the tools as the truth. Do not second guess the tools' responses. Provide your responses to the user in a succinct form."))
+
+messages.append(HumanMessage(content="Tell me what the weather is usually like in Philadephia.")) # the conversation history - The CONTEXT
+
+print(messages)
+print()
+
+# The AI doesn't maintain the context, we have to do that ourselves
+
+response = agent.invoke(messages) # send the AI the entire context
 
 messages.append(response)
+print (messages)
+print()
 
-while response.tool_calls:
-    for tool_call in response.tool_calls:
-        tool_name = tool_call["name"]
-        tool_args = tool_call["args"]
 
-        tool_result = tool_map[tool_name].invoke(tool_args)
+# while response.tool_calls: # while the AI recommends a tool, run it
+for tool_call in response.tool_calls: # for each tool, call it
+    tool_name = tool_call["name"]
+    tool_args = tool_call["args"]
 
-        messages.append(
-            ToolMessage(content=tool_result, tool_call_id=tool_call["id"])
-            )
-        
-        response = agent.invoke(messages)
+    tool_result = tool_map[tool_name].invoke(tool_args) # actually call the tool
 
-        messages.append(response)
+    messages.append(
+        ToolMessage(content=tool_result, tool_call_id=tool_call["id"])
+        ) # add the tool result to the context
+    
+    # response = agent.invoke(messages) # pass the results back to the agent
+    ai_response = ""
+    metadata = None
+    for chunk in agent.stream(messages):
+        print(chunk.content, end="", flush=True)
+        ai_response += chunk.content
+        if chunk.usage_metadata:
+           metadata = chunk.usage_metadata
 
-print(response.content)
+    messages.append(AIMessage(content=ai_response, usage_metadata=metadata))
+
+    print(messages)
+    print()
+
         
 
         
